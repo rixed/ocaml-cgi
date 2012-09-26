@@ -1,0 +1,9 @@
+.depend
+Makefile
+*.cmi
+*.cmo
+*.cmx
+*.o
+config.cache
+config.log
+config.status
