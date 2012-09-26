@@ -193,7 +193,7 @@ let parse_args () =
   let one_assoc s =
     try
       let i = String.index s '=' in
-      String.sub s 0 i, 
+      decode (String.sub s 0 i), 
       decode (String.sub s (succ i) (String.length s - i - 1))
     with
       | Not_found -> s,""
