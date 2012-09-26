@@ -1,0 +1,111 @@
+
+###################################################################
+# Configuration part
+###################################################################
+
+TARGETDIR = @OCAMLLIB@/site-lib/cgi
+
+CAMLC   = @OCAMLC@ -g
+CAMLOPT = @OCAMLOPT@
+CAMLDEP = @OCAMLDEP@
+
+###################################################################
+# Compilation
+###################################################################
+
+CMO = cgi.cmo
+CMI = $(CMO:.cmo=.cmi)
+CMX = $(CMO:.cmo=.cmx)
+MLI = $(CMO:.cmo=.mli)
+
+all: @OCAMLBEST@
+
+byte: $(CMO)
+
+opt: $(CMO) $(CMX)
+
+###################################################################
+# Installation and export
+###################################################################
+
+COMMFILES = META $(MLI) $(CMI)
+BYTEFILES = cgi.cmo
+OPTFILES  = cgi.cmx cgi.o
+
+install: install-@OCAMLBEST@
+
+install-common:
+	mkdir -p $(TARGETDIR)
+	cp $(COMMFILES) $(TARGETDIR)
+
+install-byte: install-common
+	cp $(BYTEFILES) $(TARGETDIR)
+
+install-opt: install-common install-byte
+	cp $(OPTFILES) $(TARGETDIR)
+
+MAJORVN=0
+MINORVN=8
+NAME=cgi-$(MAJORVN).$(MINORVN)
+
+FTP = /users/demons/filliatr/WWW/ftp/ocaml/cgi
+SOURCE = cgi.ml cgi.mli .depend Makefile.in configure configure.in
+FILES = CHANGES README LGPL COPYING $(SOURCE)
+
+export: move-olds source 
+
+move-olds:
+	-mv $(FTP)/cgi-*.tar.gz $(FTP)/olds
+
+source: $(FILES)
+	mkdir -p export/$(NAME)
+	cp $(FILES) export/$(NAME)
+	(cd export ; tar cf $(NAME).tar $(NAME) ; \
+	gzip -f --best $(NAME).tar)
+	cp CHANGES README COPYING LGPL cgi.mli export/$(NAME).tar.gz $(FTP)
+	caml2html -d $(FTP) cgi.mli
+
+###################################################################
+# Generic rules 
+###################################################################
+
+.SUFFIXES: .mli .ml .cmi .cmo .cmx
+
+.mli.cmi:
+	$(CAMLC) -c $(FLAGS) $<
+
+.ml.cmo:
+	$(CAMLC) -c $(FLAGS) $<
+
+.ml.o:
+	$(CAMLOPT) -c $(FLAGS) $<
+
+.ml.cmx:
+	$(CAMLOPT) -c $(FLAGS) $<
+
+# myself
+
+Makefile: Makefile.in config.status
+	./config.status
+
+config.status: configure
+	./config.status --recheck
+
+configure: configure.in
+	autoconf 
+
+###################################################################
+# backup, clean and depend :
+###################################################################
+
+clean::
+	rm -f *.cm[iox] *.o *~
+
+distclean dist-clean:: clean
+	rm -f config.cache config.status config.log Makefile
+
+depend::
+	rm -f .depend
+	$(CAMLDEP) $(LIBS) *.ml *.mli > .depend
+
+include .depend

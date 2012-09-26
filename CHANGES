@@ -1,0 +1,38 @@
+
+version 0.8, 24/5/2006
+======================
+ o no failure anymore when QUERY_STRING is not set (patch by Till Varoquaux)
+
+version 0.7, 20/9/2002
+======================
+  o fixed encoding of ' ' and '+' in URLs (M. Mauny)
+  o decoding CGI arguments for multipart/form-data encoding (X. Leroy)
+
+version 0.6, 29/3/2002
+======================
+  o improved autoconf configuration / installation
+
+version 0.5, 2/1/2002
+=====================
+  o fixed bug if PATH_INFO undefined (do not fail anymore) (C. Marché)
+
+version 0.4, 13/11/2001
+=======================
+  o added path_info and nth_path_info (decoding of PATH_INFO contents,
+    provided by Willem Duminy)
+  o cgi.o was not installed
+
+version 0.3, 18/3/1999
+======================
+  o bug fixed in reading long inputs with method POST
+  o Failure instead of Not_found when an environment variable is not set
+  o encoding of URLs according to the RFC 1738
+  (bugs reported by Gerd Stolpmann)
+
+version 0.2, 25/5/1998
+======================
+  o removing of the library Str to be thread safe
+
+version 0.1
+===========
+  o first release
