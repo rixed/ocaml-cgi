@@ -21,6 +21,10 @@
    Works whatever the method is (GET or POST) *)
 val parse_args : unit -> (string * string) list
 
+(* Decodes Cookies sent by the browser. Returns an association list.
+   Returns an empty list if no cookies were sent. *)
+val parse_cookies : unit -> (string * string) list
+
 (* Decodes the CGI arguments for multipart/form-data encoding. *)
 type field_data = {
   value : string;
@@ -29,10 +33,10 @@ type field_data = {
 } 
 val parse_multipart_args : unit -> (string * field_data) list
 
-(* Prints the content-type header. 
-   the argument is the MIME type (default value is "text/html" if the
-   argument is the empty string) *)
-val header : string -> unit
+(* Prints the content-type + cookie headers.
+   The argument to content type is the MIME type and will be "text/html" if not set *)
+val header : ?cookies:(string * string) list ->
+             ?content_type:string -> unit -> unit
 
 (* Returns the address of the CGI *)
 val this_url : unit -> string

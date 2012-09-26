@@ -171,6 +171,14 @@ let safe_getenv ?(fail_to_blank=false) s =
     else
       failwith ("Cgi: the environment variable " ^ s ^ " is not set")
 
+let one_assoc s =
+  try
+    let i = String.index s '=' in
+    decode (String.sub s 0 i), 
+    decode (String.sub s (succ i) (String.length s - i - 1))
+  with
+    | Not_found -> s,""
+
 let parse_args () = 
   let req_method = safe_getenv "REQUEST_METHOD" in
   let s = 
@@ -190,15 +198,14 @@ let parse_args () =
     end
   in
   let assocs = split '&' s in
-  let one_assoc s =
-    try
-      let i = String.index s '=' in
-      decode (String.sub s 0 i), 
-      decode (String.sub s (succ i) (String.length s - i - 1))
-    with
-      | Not_found -> s,""
-  in
   List.map one_assoc assocs
+
+(* parse_cookies: parsing of cookies sent by browser *)
+
+let parse_cookies () =
+  let data = safe_getenv ~fail_to_blank:true "HTTP_COOKIE" in
+  let cookies = Str.(split (regexp "; +") data) in
+  List.map one_assoc cookies
 
 (* parse_multipart_args: parsing of the CGI arguments for multipart/form-data
    encoding *)
@@ -315,8 +322,10 @@ let nth_path_info index =
 
 (* content-type *)
 
-let header m =
-  Printf.printf "Content-type: %s\n\n" (if m="" then "text/html" else m)
+let header ?(cookies=[]) ?(content_type="text/html") () =
+  List.iter (fun (n,v) ->
+    Printf.printf "Set-Cookie: %s=%s\n" n v) cookies ;
+  Printf.printf "Content-type: %s\n\n" content_type
 
 let header_error m =
   Printf.printf "Content-type: %s\nStatus: 500 Error in CGI script\n\n"
