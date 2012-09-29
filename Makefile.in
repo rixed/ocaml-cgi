@@ -104,7 +104,7 @@ clean::
 distclean dist-clean:: clean
 	rm -f config.cache config.status config.log Makefile
 
-depend::
+.depend:
 	rm -f .depend
 	$(CAMLDEP) $(LIBS) *.ml *.mli > .depend
 
