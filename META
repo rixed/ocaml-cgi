@@ -1,5 +1,5 @@
 description = "Objective Caml library for writing CGIs"
-version = "0.8"
+version = "0.9"
 requires = "str"
 archive(byte) = "cgi.cmo"
 archive(native) = "cgi.cmx"
