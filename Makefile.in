@@ -34,15 +34,11 @@ OPTFILES  = cgi.cmx cgi.o
 
 install: install-@OCAMLBEST@
 
-install-common:
-	mkdir -p $(TARGETDIR)
-	cp $(COMMFILES) $(TARGETDIR)
+install-byte:
+	ocamlfind install cgi $(COMMFILES) $(BYTEFILES)
 
-install-byte: install-common
-	cp $(BYTEFILES) $(TARGETDIR)
-
-install-opt: install-common install-byte
-	cp $(OPTFILES) $(TARGETDIR)
+install-opt:
+	ocamlfind install cgi $(COMMFILES) $(BYTEFILES) $(OPTFILES)
 
 MAJORVN=0
 MINORVN=8
