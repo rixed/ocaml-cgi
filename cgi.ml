@@ -334,4 +334,9 @@ let header_error m =
 (* returns the URL of the CGI *)
 
 let this_url () =
-  "http://" ^ (safe_getenv "SERVER_NAME") ^ (safe_getenv "SCRIPT_NAME")
+  let port =
+    try int_of_string (safe_getenv "SERVER_PORT")
+    with _ -> 80 in
+  "http://" ^ (safe_getenv "SERVER_NAME") ^
+              (if port <> 80 then ":"^(string_of_int port) else "") ^
+              (safe_getenv "SCRIPT_NAME")
