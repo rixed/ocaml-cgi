@@ -3,8 +3,6 @@
 # Configuration part
 ###################################################################
 
-TARGETDIR = @OCAMLLIB@/site-lib/cgi
-
 CAMLC   = @OCAMLC@ -g
 CAMLOPT = @OCAMLOPT@
 CAMLDEP = @OCAMLDEP@
@@ -41,7 +39,7 @@ install-opt:
 	ocamlfind install cgi $(COMMFILES) $(BYTEFILES) $(OPTFILES)
 
 MAJORVN=0
-MINORVN=8
+MINORVN=9
 NAME=cgi-$(MAJORVN).$(MINORVN)
 
 FTP = /users/demons/filliatr/WWW/ftp/ocaml/cgi
