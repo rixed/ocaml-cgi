@@ -33,9 +33,11 @@ type field_data = {
 } 
 val parse_multipart_args : unit -> (string * field_data) list
 
-(* Prints the content-type + cookie headers.
-   The argument to content type is the MIME type and will be "text/html" if not set *)
-val header : ?cookies:(string * string) list ->
+(* Prints the content-type + cookie headers + status.
+   The argument to content type is the MIME type and will be "text/html" if not set. *)
+val header : ?status:int ->
+             ?err_msg:string ->
+             ?cookies:(string * string) list ->
              ?content_type:string -> unit -> unit
 
 (* Returns the address of the CGI *)

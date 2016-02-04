@@ -322,9 +322,18 @@ let nth_path_info index =
 
 (* content-type *)
 
-let header ?(cookies=[]) ?(content_type="text/html") () =
+let header ?(status=200) ?err_msg ?(cookies=[]) ?(content_type="text/html") () =
+  let pick_err_msg = function
+    | _, Some e -> e
+    | 200, None -> "OK"
+    | 302, None -> "Found"
+    | 400, None -> "Bad Request"
+    | 501, None -> "Not Implemented"
+    | _ -> "Hope that's fine" in
   List.iter (fun (n,v) ->
     Printf.printf "Set-Cookie: %s=%s\n" n v) cookies ;
+  if status <> 200 || err_msg <> None then
+    Printf.printf "Status: %03d %s\n" status (pick_err_msg (status, err_msg)) ;
   Printf.printf "Content-type: %s\n\n" content_type
 
 let header_error m =
