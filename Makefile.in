@@ -65,6 +65,8 @@ source: $(FILES)
 
 .SUFFIXES: .mli .ml .cmi .cmo .cmx
 
+FLAGS := -w -3
+
 .mli.cmi:
 	$(CAMLC) -c $(FLAGS) $<
 
