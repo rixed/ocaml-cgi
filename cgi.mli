@@ -25,6 +25,9 @@ val parse_args : unit -> (string * string) list
    Returns an empty list if no cookies were sent. *)
 val parse_cookies : unit -> (string * string) list
 
+(* Read the body of the query and return it as a string. *)
+val read_body : unit -> string
+
 (* Decodes the CGI arguments for multipart/form-data encoding. *)
 type field_data = {
   value : string;

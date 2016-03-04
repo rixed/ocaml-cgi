@@ -162,13 +162,13 @@ let string_starts_with s pref =
 
 (* parse_args: parsing of the CGI arguments *)
 
-let safe_getenv ?(fail_to_blank=false) s =
+let safe_getenv ?default s =
   try 
     Sys.getenv s
-  with Not_found -> 
-    if fail_to_blank then
-      ""
-    else
+  with Not_found ->
+    match default with
+    | Some d -> d
+    | None ->
       failwith ("Cgi: the environment variable " ^ s ^ " is not set")
 
 let one_assoc s =
@@ -179,31 +179,67 @@ let one_assoc s =
   with
     | Not_found -> s,""
 
+(* read_body: return the body of the query *)
+let read_body =
+  let body_is_gone = ref false in
+  fun () ->
+    if !body_is_gone then "" else
+    let n = int_of_string (safe_getenv ~default:"-1" "CONTENT_LENGTH") in
+    if n >= 0 then (
+      let buf = String.create n in
+      really_input stdin buf 0 n;
+      body_is_gone := true;
+      buf
+    ) else (
+      (* Read until EOF *)
+      let rec blit_prevs b e = function
+        | [] -> ()
+        | (s, chunk)::prevs ->
+          String.blit chunk 0 b (e - s) s;
+          blit_prevs b (e - s) prevs in
+      let rec loop tot_s prevs =
+        let n = 4096 in
+        let buf = String.create n in
+        let s = input stdin buf 0 n in
+        if s > 0 then (
+          loop (tot_s + s) ((s, buf)::prevs)
+        ) else (
+          let res = String.create tot_s in
+          blit_prevs res tot_s prevs;
+          res
+        ) in
+      loop 0 []
+    )
+
 let parse_args () = 
   let req_method = safe_getenv "REQUEST_METHOD" in
   let s = 
     if req_method = "GET" || req_method = "HEAD" then
-      safe_getenv ~fail_to_blank:true "QUERY_STRING"
+      safe_getenv ~default:"" "QUERY_STRING"
     else begin
       let mime_type = safe_getenv "CONTENT_TYPE" in
-      if req_method = "POST"
-         && mime_type = "application/x-www-form-urlencoded" then begin
-        let n = int_of_string (safe_getenv "CONTENT_LENGTH") in
-        let buf = String.create n in
-        really_input stdin buf 0 n;
-        buf
-      end else
+      if req_method = "POST" then (
+        if mime_type = "application/x-www-form-urlencoded" then (
+          read_body ()
+        ) else (
+          (* That's fine, user can still read the body and content type
+           * and do the right thing *)
+          ""
+        )
+      ) else (
         failwith ("Cgi: cannot handle " ^ req_method ^ " request with type " ^
                   mime_type)
+      )
     end
   in
   let assocs = split '&' s in
   List.map one_assoc assocs
 
+
 (* parse_cookies: parsing of cookies sent by browser *)
 
 let parse_cookies () =
-  let data = safe_getenv ~fail_to_blank:true "HTTP_COOKIE" in
+  let data = safe_getenv ~default:"" "HTTP_COOKIE" in
   let cookies = Str.(split (regexp "; +") data) in
   List.map one_assoc cookies
 
@@ -293,16 +329,12 @@ let parse_multipart_args () =
       failwith ("Cgi: no boundary provided in " ^ mime_type) in
   (* Weird code organization intended to help GC reclaim early.
      Equivalent, clearer code:
-       let data_len = int_of_string (safe_getenv "CONTENT_LENGTH") in
-       let data = String.create data_len in
-       really_input stdin data 0 n;
+       let data = read_body () in
        let chunks = Str.split (Str.regexp_string ("--" ^ boundary)) data in
        extract_fields [] chunks *)
   extract_fields []
     (Str.split (Str.regexp_string ("--" ^ boundary))
-      (let data_len = int_of_string (safe_getenv "CONTENT_LENGTH") in
-       let data = String.create data_len in
-       really_input stdin data 0 data_len; data))
+      (read_body ()))
 
 (*s PATH\_INFO *)
 
