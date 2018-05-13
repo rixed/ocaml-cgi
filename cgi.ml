@@ -63,8 +63,9 @@ let raw_decode s =
   in
   if need_decode 0 then
     let len = compute_len 0 0 in
-    let s1 = String.create len in
-    copy_decode_in s1 0 0
+    let s1 = Bytes.create len in
+    copy_decode_in s1 0 0 |>
+    Bytes.to_string
   else 
     s
 
@@ -132,7 +133,9 @@ let encode s =
       s1
   in
   if need_code 0 then
-    let len = compute_len 0 0 in copy_code_in (String.create len) 0 0
+    let len = compute_len 0 0 in
+    copy_code_in (Bytes.create len) 0 0 |>
+    Bytes.to_string
   else 
     s
 
@@ -186,27 +189,27 @@ let read_body =
     if !body_is_gone then "" else
     let n = int_of_string (safe_getenv ~default:"-1" "CONTENT_LENGTH") in
     if n >= 0 then (
-      let buf = String.create n in
+      let buf = Bytes.create n in
       really_input stdin buf 0 n;
       body_is_gone := true;
-      buf
+      Bytes.to_string buf
     ) else (
       (* Read until EOF *)
       let rec blit_prevs b e = function
         | [] -> ()
         | (s, chunk)::prevs ->
-          String.blit chunk 0 b (e - s) s;
+          Bytes.blit chunk 0 b (e - s) s;
           blit_prevs b (e - s) prevs in
       let rec loop tot_s prevs =
         let n = 4096 in
-        let buf = String.create n in
+        let buf = Bytes.create n in
         let s = input stdin buf 0 n in
         if s > 0 then (
           loop (tot_s + s) ((s, buf)::prevs)
         ) else (
-          let res = String.create tot_s in
+          let res = Bytes.create tot_s in
           blit_prevs res tot_s prevs;
-          res
+          Bytes.to_string res
         ) in
       loop 0 []
     )
