@@ -349,7 +349,7 @@ let path_info =
 let nth_path_info index =
   try
     List.nth path_info index
-  with Failure "nth" -> 
+  with Failure _ -> 
     ""
 
 (* content-type *)
