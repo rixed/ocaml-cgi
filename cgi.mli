@@ -2,15 +2,15 @@
  * ocamlcgi - Objective Caml library for writing CGIs
  * Copyright (C) 1997 Daniel de Rauglaudre, INRIA
  * Copyright (C) 1998 Jean-Christophe FILLIATRE
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License version 2, as published by the Free Software Foundation.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * 
+ *
  * See the GNU Library General Public License version 2 for more details
  * (enclosed in the file LGPL).
  *)
@@ -33,7 +33,7 @@ type field_data = {
   value : string;
   filename : string;
   content_type : string;
-} 
+}
 val parse_multipart_args : unit -> (string * field_data) list
 
 (* Prints the content-type + cookie headers + status.
