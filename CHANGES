@@ -1,7 +1,14 @@
+version 0.9, 14/05/2018
+=======================
+  o refresh code for newer OCaml compilers
+  o make it possible to read the request body and set the response code
+  o can set/get cookies
+  o improve build (now uses ocamlfind to (un)install)
+  o minor fixes
 
 version 0.8, 24/5/2006
 ======================
- o no failure anymore when QUERY_STRING is not set (patch by Till Varoquaux)
+  o no failure anymore when QUERY_STRING is not set (patch by Till Varoquaux)
 
 version 0.7, 20/9/2002
 ======================
