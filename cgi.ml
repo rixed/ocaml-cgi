@@ -380,6 +380,12 @@ let this_url () =
   let port =
     try int_of_string (safe_getenv "SERVER_PORT")
     with _ -> 80 in
+  let script_name = safe_getenv "SCRIPT_NAME" in
+  let script_name =
+    if script_name <> "" && script_name.[0] <> '/' then
+      "/" ^ script_name
+    else
+      script_name in
   "http://" ^ (safe_getenv "SERVER_NAME") ^
               (if port <> 80 then ":"^(string_of_int port) else "") ^
-              (safe_getenv "SCRIPT_NAME")
+              script_name
