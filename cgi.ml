@@ -218,7 +218,7 @@ let read_body =
 let parse_args () =
   let req_method = safe_getenv "REQUEST_METHOD" in
   let s =
-    if req_method = "GET" || req_method = "HEAD" then
+    if List.mem req_method [ "GET" ; "HEAD" ; "DEL" ] then
       safe_getenv ~default:"" "QUERY_STRING"
     else begin
       let mime_type = safe_getenv "CONTENT_TYPE" in
