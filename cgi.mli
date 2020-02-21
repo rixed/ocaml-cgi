@@ -46,14 +46,14 @@ val header : ?status:int ->
 (* Returns the address of the CGI *)
 val this_url : unit -> string
 
-(* The list of items found in PATH\_INFO *)
+(* The list of items found in PATH_INFO *)
 val path_info : string list
 
 (* Given a zero-based index, returns the [i]-th info element;
    returns the empty string if [i] is out of bounds *)
 val nth_path_info : int -> string
 
-(* Coding and uncoding of CGI arguments.
+(* Coding and decoding of CGI arguments.
    The following code may be useful but is already called in [parse_args].
    Code from wserver, (c) Daniel de Rauglaudre, INRIA. *)
 
