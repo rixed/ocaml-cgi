@@ -222,7 +222,7 @@ let parse_args () =
       safe_getenv ~default:"" "QUERY_STRING"
     else begin
       let mime_type = safe_getenv "CONTENT_TYPE" in
-      if req_method = "POST" then (
+      if req_method = "POST" || req_method = "PUT" then (
         if mime_type = "application/x-www-form-urlencoded" then (
           read_body ()
         ) else (
