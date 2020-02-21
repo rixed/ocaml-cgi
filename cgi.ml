@@ -216,26 +216,24 @@ let read_body =
     )
 
 let parse_args () =
-  let req_method = safe_getenv "REQUEST_METHOD" in
+  let req_method = safe_getenv "REQUEST_METHOD"
+  and mime_type = safe_getenv "CONTENT_TYPE"
+  and get_params = safe_getenv ~default:"" "QUERY_STRING" in
+  let form_params =
+    if List.mem req_method [ "POST" ; "PUT" ] &&
+       mime_type = "application/x-www-form-urlencoded"
+    then
+      read_body ()
+    else
+      (* That's fine, user can still read the body and content type
+       * and do the right thing *)
+      "" in
   let s =
-    if List.mem req_method [ "GET" ; "HEAD" ; "DEL" ] then
-      safe_getenv ~default:"" "QUERY_STRING"
-    else begin
-      let mime_type = safe_getenv "CONTENT_TYPE" in
-      if req_method = "POST" || req_method = "PUT" then (
-        if mime_type = "application/x-www-form-urlencoded" then (
-          read_body ()
-        ) else (
-          (* That's fine, user can still read the body and content type
-           * and do the right thing *)
-          ""
-        )
-      ) else (
-        failwith ("Cgi: cannot handle " ^ req_method ^ " request with type " ^
-                  mime_type)
-      )
-    end
-  in
+    get_params ^ (
+      if get_params <> "" && form_params <> "" then
+        "&" ^ form_params
+      else ""
+    ) in
   let assocs = split '&' s in
   List.map one_assoc assocs
 
