@@ -210,6 +210,7 @@ let read_body =
         ) else (
           let res = Bytes.create tot_s in
           blit_prevs res tot_s prevs;
+          body_is_gone := true;
           Bytes.to_string res
         ) in
       loop 0 []
