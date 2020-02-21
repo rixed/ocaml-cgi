@@ -1,3 +1,7 @@
+version 0.10, 21/2/2020
+=======================
+  o accept PUT and DEL queries
+
 version 0.9, 14/05/2018
 =======================
   o refresh code for newer OCaml compilers
