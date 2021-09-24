@@ -1,14 +1,5 @@
-.depend
-Makefile
-*.cmi
-*.cmo
-*.cmx
-*.o
-config.cache
-config.log
-config.status
 opam-version: "2.0"
-version: "0.10"
+version: "0.11"
 maintainer: "rixed-opam@happyleptic.org"
 authors: [
   "Daniel de Rauglaudre"
@@ -31,7 +22,5 @@ synopsis: "Library for writing CGIs"
 flags: light-uninstall
 url {
   src: "https://github.com/rixed/ocaml-cgi/archive/v0.10.tar.gz"
-  checksum: "md5=1e1b9e4de0ba12688b4b66523f42125d"
+  checksum: "md5=acade309d4d030dfbb73a2f05c5a1880"
 }
-configure.lineno
-autom4te.cache

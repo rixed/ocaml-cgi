@@ -43,10 +43,10 @@ MINORVN=9
 NAME=cgi-$(MAJORVN).$(MINORVN)
 
 FTP = /users/demons/filliatr/WWW/ftp/ocaml/cgi
-SOURCE = cgi.ml cgi.mli .depend Makefile.in configure configure.in
+SOURCE = cgi.ml cgi.mli .depend
 FILES = CHANGES README LGPL COPYING $(SOURCE)
 
-export: move-olds source 
+export: move-olds source
 
 move-olds:
 	-mv $(FTP)/cgi-*.tar.gz $(FTP)/olds
@@ -60,7 +60,7 @@ source: $(FILES)
 	caml2html -d $(FTP) cgi.mli
 
 ###################################################################
-# Generic rules 
+# Generic rules
 ###################################################################
 
 .SUFFIXES: .mli .ml .cmi .cmo .cmx
@@ -78,17 +78,6 @@ FLAGS := -w -3
 
 .ml.cmx:
 	$(CAMLOPT) -c $(FLAGS) $<
-
-# myself
-
-Makefile: Makefile.in config.status
-	./config.status
-
-config.status: configure
-	./config.status --recheck
-
-configure: configure.in
-	autoconf 
 
 ###################################################################
 # backup, clean and depend :
