@@ -21,6 +21,6 @@ depends: [
 synopsis: "Library for writing CGIs"
 flags: light-uninstall
 url {
-  src: "https://github.com/rixed/ocaml-cgi/archive/v0.10.tar.gz"
-  checksum: "md5=acade309d4d030dfbb73a2f05c5a1880"
+  src: "https://github.com/rixed/ocaml-cgi/archive/v0.11.tar.gz"
+  checksum: "md5=afb370c1ba77414182f74bd01a4fe2ab"
 }
