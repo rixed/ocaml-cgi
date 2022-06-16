@@ -54,9 +54,9 @@ let raw_decode s =
         match s.[i] with
           | '%' when i + 2 < String.length s ->
               let v = hexa_val s.[i + 1] * 16 + hexa_val s.[i + 2] in
-              s1.[i1] <- Char.chr v; i + 3
-          | '+' -> s1.[i1] <- ' '; succ i
-          | x -> s1.[i1] <- x; succ i
+              Bytes.set s1 i1 (Char.chr v); i + 3
+          | '+' -> Bytes.set s1 i1 ' '; succ i
+          | x -> Bytes.set s1 i1 x; succ i
       in
       copy_decode_in s1 i (succ i1)
     else s1
@@ -118,16 +118,16 @@ let encode s =
     if i < String.length s then
       let i1 =
         match s.[i] with
-          | ' ' -> s1.[i1] <- '+'; succ i1
+          | ' ' -> Bytes.set s1 i1 '+'; succ i1
           | c ->
               if special c then
               begin
-                  s1.[i1] <- '%';
-                  s1.[i1 + 1] <- hexa_digit (Char.code c / 16);
-                  s1.[i1 + 2] <- hexa_digit (Char.code c mod 16);
+                  Bytes.set s1 i1 '%';
+                  Bytes.set s1 (i1 + 1) (hexa_digit (Char.code c / 16));
+                  Bytes.set s1 (i1 + 2) (hexa_digit (Char.code c mod 16));
                   i1 + 3
               end
-              else begin s1.[i1] <- c; succ i1 end
+              else begin Bytes.set s1 i1 c; succ i1 end
       in
       copy_code_in s1 (succ i) i1
     else
@@ -370,10 +370,6 @@ let header ?(status=200) ?err_msg ?(cookies=[]) ?(content_type="text/html") () =
   if status <> 200 || err_msg <> None then
     Printf.printf "Status: %03d %s\n" status (pick_err_msg (status, err_msg)) ;
   Printf.printf "Content-type: %s\n\n" content_type
-
-let header_error m =
-  Printf.printf "Content-type: %s\nStatus: 500 Error in CGI script\n\n"
-    (if m="" then "text/html" else m)
 
 (* returns the URL of the CGI *)
 
