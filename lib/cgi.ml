@@ -218,7 +218,7 @@ let read_body =
 
 let parse_args () =
   let req_method = safe_getenv "REQUEST_METHOD"
-  and mime_type = safe_getenv "CONTENT_TYPE"
+  and mime_type = safe_getenv ~default:"" "CONTENT_TYPE"
   and get_params = safe_getenv ~default:"" "QUERY_STRING" in
   let form_params =
     if List.mem req_method [ "POST" ; "PUT" ] &&
