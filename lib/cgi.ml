@@ -230,11 +230,12 @@ let parse_args () =
        * and do the right thing *)
       "" in
   let s =
-    get_params ^ (
-      if get_params <> "" && form_params <> "" then
-        "&" ^ form_params
-      else ""
-    ) in
+    if form_params = "" then
+      get_params
+    else if get_params <> "" then
+        get_params ^ "&" ^ form_params
+    else form_params
+  in
   let assocs = split '&' s in
   List.map one_assoc assocs
 
