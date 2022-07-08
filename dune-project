@@ -21,7 +21,6 @@
 (package
  (name cgi)
  (synopsis "Library for writing CGIs")
- (description "A longer description")
  (depends (ocaml (>= 4.02.0)) dune)
 )
 
