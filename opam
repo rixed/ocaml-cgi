@@ -1,5 +1,5 @@
 opam-version: "2.0"
-version: "0.11"
+version: "0.12"
 maintainer: "rixed-opam@happyleptic.org"
 authors: [
   "Daniel de Rauglaudre"
@@ -21,6 +21,6 @@ depends: [
 synopsis: "Library for writing CGIs"
 flags: light-uninstall
 url {
-  src: "https://github.com/rixed/ocaml-cgi/archive/v0.11.tar.gz"
-  checksum: "md5=afb370c1ba77414182f74bd01a4fe2ab"
+  src: "https://github.com/rixed/ocaml-cgi/archive/v0.12.tar.gz"
+  checksum: "md5=8df4f73fbb71313eb71f35922d8d101e"
 }
