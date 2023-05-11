@@ -18,9 +18,11 @@ MLI = $(CMO:.cmo=.mli)
 
 all: @OCAMLBEST@
 
-byte: $(CMO)
+byte: $(CMO) runcgi.byte
+	cp -l -f runcgi.byte runcgi
 
-opt: $(CMO) $(CMX)
+opt: $(CMO) $(CMX) runcgi.opt
+	cp -l -f runcgi.opt runcgi
 
 ###################################################################
 # Installation and export
@@ -33,10 +35,10 @@ OPTFILES  = cgi.cmx cgi.o
 install: install-@OCAMLBEST@
 
 install-byte:
-	ocamlfind install cgi $(COMMFILES) $(BYTEFILES)
+	ocamlfind install cgi $(COMMFILES) $(BYTEFILES) runcgi
 
 install-opt:
-	ocamlfind install cgi $(COMMFILES) $(BYTEFILES) $(OPTFILES)
+	ocamlfind install cgi $(COMMFILES) $(BYTEFILES) $(OPTFILES) runcgi
 
 MAJORVN=0
 MINORVN=9
@@ -63,7 +65,7 @@ source: $(FILES)
 # Generic rules
 ###################################################################
 
-.SUFFIXES: .mli .ml .cmi .cmo .cmx
+.SUFFIXES: .mli .ml .cmi .cmo .cmx .byte .opt
 
 FLAGS := -w -3
 
@@ -79,15 +81,21 @@ FLAGS := -w -3
 .ml.cmx:
 	$(CAMLOPT) -c $(FLAGS) $<
 
+.cmo.byte:
+	$(CAMLC) unix.cma $(FLAGS) $< -o $@
+
+.cmx.opt:
+	$(CAMLOPT) unix.cmxa $(FLAGS) $< -o $@
+
 ###################################################################
 # backup, clean and depend :
 ###################################################################
 
 clean::
-	rm -f *.cm[iox] *.o *~
+	rm -f *.cm[iox] *.o *.opt *.byte *~
 
 distclean dist-clean:: clean
-	rm -f config.cache config.status config.log Makefile
+	rm -f config.cache config.status config.log Makefile runcgi
 
 .depend:
 	rm -f .depend
