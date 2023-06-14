@@ -3,6 +3,7 @@
 let () =
   let meth = ref "GET"
   and typ = ref "text/plain"
+  and accept = ref ""
   and body = ref ""
   and query = ref ""
   and cmd = ref [] in
@@ -10,10 +11,11 @@ let () =
   Arg.(parse
     [ "-method", Set_string meth, default !meth "HTTP method (likely GET or POST)" ;
       "-type", Set_string typ, default !typ "Content type" ;
+      "-accept", Set_string accept, default !accept "Accept" ;
       "-body", Set_string body, default !body "Content body" ;
       "-query", Set_string query, default !query "Query string (after the \"?\" in the URL, ex: \"x=1&y=2\")" ]
     (fun s -> cmd := s :: !cmd)
-    "runcgi -method <meth> -type <type> -body <txt> -query <qry> command ...args...") ;
+    "runcgi -method <meth> -type <type> -accept <types> -body <txt> -query <qry> command ...args...") ;
   let cmd = List.rev !cmd in
   if cmd = [] then (
     Printf.eprintf "Missing command\n" ;
@@ -28,12 +30,17 @@ let () =
       "SERVER_PORT", "80" ;
       "SCRIPT_NAME", cmd.(0) ;
       "SERVER_NAME", "runcgi" ] in
+  let add_env_if_set n s env =
+    match s with
+    | "" -> env
+    | s -> (n, s) :: env in
   let add_env n env =
     match Sys.getenv n with
     | exception Not_found -> env
     | s -> (n, s) :: env in
   let env = add_env "HOME" env in
   let env = add_env "PATH" env in
+  let env = add_env_if_set "HTTP_ACCEPT" !accept env in
   let env =
     List.map (fun (n, v) -> n ^"="^ v) env |>
     Array.of_list in
