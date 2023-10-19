@@ -40,6 +40,7 @@ let () =
     | s -> (n, s) :: env in
   let env = add_env "HOME" env in
   let env = add_env "PATH" env in
+  let env = add_env "OCAMLRUNPARAM" env in
   let env = add_env_if_set "HTTP_ACCEPT" !accept env in
   let env =
     List.map (fun (n, v) -> n ^"="^ v) env |>
