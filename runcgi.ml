@@ -45,4 +45,30 @@ let () =
   let env =
     List.map (fun (n, v) -> n ^"="^ v) env |>
     Array.of_list in
-  Unix.execvpe cmd.(0) cmd env
+  let open Unix in
+  if String.length !body = 0 then
+    execvpe cmd.(0) cmd env
+  else
+    let read_fd, write_fd = pipe ~cloexec:false () in
+    flush_all () ;
+    let pid = fork () in
+    if pid = 0 then (
+      (* Child process *)
+      dup2 read_fd stdin ;
+      close write_fd ;
+      execvpe cmd.(0) cmd env
+    ) else (
+      (* Parent process *)
+      close read_fd ;
+      write_substring write_fd !body 0 (String.length !body) ;
+      close write_fd ;
+      let _, status = waitpid [] pid in
+      (* Exit with the same status: *)
+      match status with
+      | WEXITED s ->
+          exit s
+      | WSIGNALED s ->
+          Printf.eprintf "Killed by signal %d" s
+      | WSTOPPED _ ->
+          assert false (* SHould not happen given the waitpif args *)
+    )
