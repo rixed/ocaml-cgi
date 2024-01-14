@@ -13,7 +13,8 @@ let () =
       "-type", Set_string typ, default !typ "Content type" ;
       "-accept", Set_string accept, default !accept "Accept" ;
       "-body", Set_string body, default !body "Content body" ;
-      "-query", Set_string query, default !query "Query string (after the \"?\" in the URL, ex: \"x=1&y=2\")" ]
+      "-query", Set_string query, default !query "Query string (after the \"?\" in the URL, ex: \"x=1&y=2\")"
+      (* TODO: -env to add envvars *) ]
     (fun s -> cmd := s :: !cmd)
     "runcgi -method <meth> -type <type> -accept <types> -body <txt> -query <qry> command ...args...") ;
   let cmd = List.rev !cmd in
@@ -60,7 +61,7 @@ let () =
     ) else (
       (* Parent process *)
       close read_fd ;
-      write_substring write_fd !body 0 (String.length !body) ;
+      write_substring write_fd !body 0 (String.length !body) |> ignore ;
       close write_fd ;
       let _, status = waitpid [] pid in
       (* Exit with the same status: *)
