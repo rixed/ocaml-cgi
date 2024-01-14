@@ -41,7 +41,9 @@ val parse_multipart_args : unit -> (string * field_data) list
 val header : ?status:int ->
              ?err_msg:string ->
              ?cookies:(string * string) list ->
-             ?content_type:string -> unit -> unit
+             ?content_type:string ->
+             ?content_length:int ->
+             ?location:string -> unit -> unit
 
 (* Returns the address of the CGI *)
 val this_url : unit -> string

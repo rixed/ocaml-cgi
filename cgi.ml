@@ -357,7 +357,7 @@ let nth_path_info index =
 
 (* content-type *)
 
-let header ?(status=200) ?err_msg ?(cookies=[]) ?(content_type="text/html") () =
+let header ?(status=200) ?err_msg ?(cookies=[]) ?(content_type="text/html") ?content_length ?location () =
   let pick_err_msg = function
     | _, Some e -> e
     | 200, None -> "OK"
@@ -369,6 +369,12 @@ let header ?(status=200) ?err_msg ?(cookies=[]) ?(content_type="text/html") () =
     Printf.printf "Set-Cookie: %s=%s\n" n v) cookies ;
   if status <> 200 || err_msg <> None then
     Printf.printf "Status: %03d %s\n" status (pick_err_msg (status, err_msg)) ;
+  (match content_length with
+  | None -> ()
+  | Some l -> Printf.printf "Content-length: %d\n" l) ;
+  (match location with
+  | None -> ()
+  | Some l -> Printf.printf "Location: %s\n" l) ;
   Printf.printf "Content-type: %s\n\n" content_type
 
 let header_error m =
