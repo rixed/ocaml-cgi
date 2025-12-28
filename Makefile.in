@@ -67,7 +67,7 @@ source: $(FILES)
 
 .SUFFIXES: .mli .ml .cmi .cmo .cmx .byte .opt
 
-FLAGS := -w -3
+FLAGS := -w -3 -I +unix -I +str
 
 .mli.cmi:
 	$(CAMLC) -c $(FLAGS) $<
