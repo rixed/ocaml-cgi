@@ -357,7 +357,13 @@ let nth_path_info index =
 
 (* content-type *)
 
+exception Headers_already_sent
+
+let header_sent = ref false
+
 let header ?(status=200) ?err_msg ?(cookies=[]) ?(content_type="text/html") ?content_length ?location () =
+  if !header_sent then raise Headers_already_sent ;
+  header_sent := true ;
   let pick_err_msg = function
     | _, Some e -> e
     | 200, None -> "OK"
